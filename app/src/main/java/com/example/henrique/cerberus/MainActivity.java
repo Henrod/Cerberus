@@ -1,11 +1,13 @@
 package com.example.henrique.cerberus;
 
 import android.os.AsyncTask;
+import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -36,7 +38,7 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected String doInBackground(String... params) {
             try {
-                jobj = clientServerInterface.makeHttpRequest("http://192.168.1.109/cerberus/main.php");
+                jobj = clientServerInterface.makeHttpRequest("http://10.0.2.2/cerberus/main.php");
                 ab = jobj.getString("key");
                 Log.d("http", "passei aqui ab = " + ab);
             } catch (IOException | JSONException e) {
