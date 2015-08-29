@@ -3,12 +3,15 @@ package com.example.henrique.cerberus;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 
 public class MainActivity extends ActionBarActivity {
 
@@ -32,11 +35,11 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            jobj = clientServerInterface.makeHttpRequest("localhost/cerberus/main.php");
-
-            try{
+            try {
+                jobj = clientServerInterface.makeHttpRequest("http://192.168.1.109/cerberus/main.php");
                 ab = jobj.getString("key");
-            } catch (JSONException e) {
+                Log.d("http", "passei aqui ab = " + ab);
+            } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
 
@@ -44,7 +47,10 @@ public class MainActivity extends ActionBarActivity {
         }
 
         protected void onPostExecute(String ab){
-            textView.setText(ab);
+            if(ab != null)
+                textView.setText(ab);
+            else
+                textView.setText("Não funfou");
         }
     }
 }

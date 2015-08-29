@@ -1,5 +1,7 @@
 package com.example.henrique.cerberus;
 
+import android.util.Log;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -28,44 +30,36 @@ public class ClientServerInterface {
     public ClientServerInterface(){}
 
     //returns JSON object
-    public JSONObject makeHttpRequest(String url){
+    public JSONObject makeHttpRequest(String url) throws IOException {
         //http client helps to send and receive data
         DefaultHttpClient httpClient = new DefaultHttpClient();
         //our requet method is post
         HttpPost httpPost = new HttpPost(url);
-
-        try{
             //get response
-            HttpResponse httpResponse = httpClient.execute(httpPost);
-            HttpEntity httpEntity = httpResponse.getEntity();
-            //get the content and store it into inputstream object
-            is = httpEntity.getContent();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        HttpResponse httpResponse = httpClient.execute(httpPost);
+        HttpEntity httpEntity = httpResponse.getEntity();
+        //get the content and store it into inputstream object
+        is = httpEntity.getContent();
 
+        Log.d("input", is.toString() + "");
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
+        //BufferedReader reader = new BufferedReader(new InputStreamReader(is), 8);
+        StringBuilder sb = new StringBuilder();
+        String line = null;
         try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is, "iso-8859-1"), 8);
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-            try {
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line).append("\n");
-                }
-
-                is.close();
-                json = sb.toString();
-
-                try {
-                    jobj = new JSONObject(json);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append("\n");
             }
 
-        } catch (UnsupportedEncodingException e){
+            is.close();
+            json = sb.toString();
+
+            try {
+                jobj = new JSONObject(json);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
