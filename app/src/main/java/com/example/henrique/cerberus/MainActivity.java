@@ -1,6 +1,7 @@
 package com.example.henrique.cerberus;
 
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -10,17 +11,38 @@ import android.view.MenuItem;
 import android.webkit.WebView;
 import android.widget.TextView;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketAddress;
+import java.net.URL;
+import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends ActionBarActivity {
 
-    JSONObject jobj = null;
-    ClientServerInterface clientServerInterface = new ClientServerInterface();
     TextView textView;
-    String ab;
+    TextView tv_id;
+    TextView tv_lat;
+    TextView tv_long;
+    TextView tv_moveu;
+    String json;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,31 +50,89 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         textView = (TextView) findViewById(R.id.textview);
+        tv_id = (TextView) findViewById(R.id.id);
+        tv_lat = (TextView) findViewById(R.id.lat);
+        tv_long = (TextView) findViewById(R.id._long);
+        tv_moveu = (TextView) findViewById(R.id.moveu);
 
         //start background process
-        new RetrieveData().execute();
+        //new RetrieveData().execute();
+        callAsynchronousTask();
     }
 
-    class RetrieveData extends AsyncTask <String, String, String> {
+    private String decode(String json) throws JSONException {
+        JSONObject jsonObject = new JSONObject(json);
+
+        String json_id = jsonObject.getString("id");
+        tv_id.setText("ID: " + json_id);
+        String json_lat = jsonObject.getString("lat");
+        tv_lat.setText("Latitude: " + json_lat);
+        String json_long = jsonObject.getString("long");
+        tv_long.setText("Longitude: " + json_long);
+        String json_moveu = jsonObject.getString("moveu");
+        tv_moveu.setText("Moveu: " + json_moveu);
+
+        return null;
+    }
+
+
+    class RetrieveData extends AsyncTask<String, String, String> {
 
         @Override
         protected String doInBackground(String... params) {
+            //establish server socker
+
             try {
-                jobj = clientServerInterface.makeHttpRequest("http://10.0.2.2/cerberus/main.php");
-                ab = jobj.getString("key");
-                Log.d("http", "passei aqui ab = " + ab);
-            } catch (IOException | JSONException e) {
+                URL server = new URL("http://192.168.1.110/cerberus/teste.php");
+                BufferedReader in = new BufferedReader(new InputStreamReader(server.openStream()));
+                json = in.readLine();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            return ab;
-        }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        decode(json);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if (json != null) {
+                        textView.setText("JSON capturado: " + json);
+                    } else {
+                        textView.setText("Nem rolou");
+                    }
+                }
+            });
 
-        protected void onPostExecute(String ab){
-            if(ab != null)
-                textView.setText(ab);
-            else
-                textView.setText("Não funfou");
+            return null;
         }
     }
+
+
+
+    public void callAsynchronousTask() {
+        final Handler handler = new Handler();
+        Timer timer = new Timer();
+        TimerTask doAsynchronousTask = new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    public void run() {
+                        try {
+                            RetrieveData retrieveData = new RetrieveData();
+                            // PerformBackgroundTask this class is the class that extends AsynchTask
+                            retrieveData.execute();
+                        } catch (Exception e) {
+                            // TODO Auto-generated catch block
+                        }
+                    }
+                });
+            }
+        };
+        timer.schedule(doAsynchronousTask, 0, 30000); //execute in every 30000 ms = 30s
+    }
+
+
 }
