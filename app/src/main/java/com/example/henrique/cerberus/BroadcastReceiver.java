@@ -43,7 +43,7 @@ public class BroadcastReceiver extends android.content.BroadcastReceiver {
 
         Notification n = mBuilder.build();
         Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(500);
+        v.vibrate(1000);
         n.flags = Notification.FLAG_AUTO_CANCEL;
     }
 }
