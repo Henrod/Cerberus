@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebView;
 import android.widget.TextView;
 
@@ -54,10 +55,6 @@ public class MainActivity extends ActionBarActivity {
         tv_lat = (TextView) findViewById(R.id.lat);
         tv_long = (TextView) findViewById(R.id._long);
         tv_moveu = (TextView) findViewById(R.id.moveu);
-
-        //start background process
-        //new RetrieveData().execute();
-        callAsynchronousTask();
     }
 
     private String decode(String json) throws JSONException {
@@ -83,7 +80,7 @@ public class MainActivity extends ActionBarActivity {
             //establish server socker
 
             try {
-                URL server = new URL("http://192.168.1.110/cerberus/teste.php");
+                URL server = new URL("http://10.0.7.12/cerberus/teste.php");
                 BufferedReader in = new BufferedReader(new InputStreamReader(server.openStream()));
                 json = in.readLine();
             } catch (IOException e) {
@@ -134,5 +131,8 @@ public class MainActivity extends ActionBarActivity {
         timer.schedule(doAsynchronousTask, 0, 30000); //execute in every 30000 ms = 30s
     }
 
+    public void start(View view){
+        callAsynchronousTask();
+    }
 
 }
