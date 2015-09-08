@@ -1,5 +1,6 @@
 package com.example.henrique.cerberus;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.StrictMode;
@@ -10,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.TextView;
 
 import org.apache.http.HttpEntity;
@@ -92,13 +94,14 @@ public class MainActivity extends ActionBarActivity {
                 public void run() {
                     try {
                         decode(json);
+                        verifyLocation(json);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     if (json != null) {
                         textView.setText("JSON capturado: " + json);
                     } else {
-                        textView.setText("Nem rolou");
+                        textView.setText("Erro: Sem conexão com IP do servidor");
                     }
                 }
             });
@@ -128,11 +131,20 @@ public class MainActivity extends ActionBarActivity {
                 });
             }
         };
-        timer.schedule(doAsynchronousTask, 0, 30000); //execute in every 30000 ms = 30s
+        timer.schedule(doAsynchronousTask, 0, 10000); //execute in every 30000 ms = 30s
     }
 
     public void start(View view){
+        view.setVisibility(View.GONE);
         callAsynchronousTask();
     }
 
+    void verifyLocation(String json) throws JSONException {
+        JSONObject jsonObject = new JSONObject(json);
+        String moveu = jsonObject.getString("moveu");
+
+        if (moveu.equals("Sim")){
+            startActivity(new Intent(MainActivity.this, Alert.class));
+        }
+    }
 }
