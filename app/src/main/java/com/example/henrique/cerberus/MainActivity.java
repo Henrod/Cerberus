@@ -34,6 +34,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -47,6 +48,8 @@ public class MainActivity extends ActionBarActivity {
     TextView tv_moveu;
     String json;
 
+    JDBC jdbc;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +60,8 @@ public class MainActivity extends ActionBarActivity {
         tv_lat = (TextView) findViewById(R.id.lat);
         tv_long = (TextView) findViewById(R.id._long);
         tv_moveu = (TextView) findViewById(R.id.moveu);
+
+        jdbc = new JDBC();
     }
 
     private String decode(String json) throws JSONException {
@@ -145,6 +150,12 @@ public class MainActivity extends ActionBarActivity {
 
         if (moveu.equals("Sim")){
             startActivity(new Intent(MainActivity.this, Alert.class));
+        } else {
+            resetWatchdog();
         }
+    }
+
+    private void resetWatchdog() {
+        jdbc.connect();
     }
 }
