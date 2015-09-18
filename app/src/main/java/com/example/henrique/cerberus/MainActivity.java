@@ -6,12 +6,14 @@ import android.os.Handler;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.apache.http.HttpEntity;
@@ -35,50 +37,31 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends ActionBarActivity {
 
-    TextView textView;
-    TextView tv_id;
-    TextView tv_lat;
-    TextView tv_long;
-    TextView tv_moveu;
-    String json;
-
-    JDBC jdbc;
+    EditText et_login;
+    String login, json;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView = (TextView) findViewById(R.id.textview);
-        tv_id = (TextView) findViewById(R.id.id);
-        tv_lat = (TextView) findViewById(R.id.lat);
-        tv_long = (TextView) findViewById(R.id._long);
-        tv_moveu = (TextView) findViewById(R.id.moveu);
-
-        jdbc = new JDBC();
+        et_login = (EditText) findViewById(R.id.et_login);
     }
 
-    private String decode(String json) throws JSONException {
-        JSONObject jsonObject = new JSONObject(json);
+    public void start_login(View view) throws JSONException {
+        login = et_login.getText().toString();
 
-        String json_id = jsonObject.getString("id");
-        tv_id.setText("ID: " + json_id);
-        String json_lat = jsonObject.getString("lat");
-        tv_lat.setText("Latitude: " + json_lat);
-        String json_long = jsonObject.getString("long");
-        tv_long.setText("Longitude: " + json_long);
-        String json_moveu = jsonObject.getString("moveu");
-        tv_moveu.setText("Moveu: " + json_moveu);
-
-        return null;
+        RetrieveData retrieveData = new RetrieveData();
+        // PerformBackgroundTask this class is the class that extends AsynchTask
+        retrieveData.execute();
     }
-
 
     class RetrieveData extends AsyncTask<String, String, String> {
 
@@ -87,7 +70,7 @@ public class MainActivity extends ActionBarActivity {
             //establish server socker
 
             try {
-                URL server = new URL("http://10.0.7.12/cerberus/teste.php");
+                URL server = new URL("http://172.21.221.95/cerberus/get_login.php?login_java=" + login);//"http://10.0.7.12/cerberus/teste.php");
                 BufferedReader in = new BufferedReader(new InputStreamReader(server.openStream()));
                 json = in.readLine();
             } catch (IOException e) {
@@ -99,14 +82,8 @@ public class MainActivity extends ActionBarActivity {
                 public void run() {
                     try {
                         decode(json);
-                        verifyLocation(json);
                     } catch (JSONException e) {
                         e.printStackTrace();
-                    }
-                    if (json != null) {
-                        textView.setText("JSON capturado: " + json);
-                    } else {
-                        textView.setText("Erro: Sem conexão com IP do servidor");
                     }
                 }
             });
@@ -115,47 +92,15 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-
-
-    public void callAsynchronousTask() {
-        final Handler handler = new Handler();
-        Timer timer = new Timer();
-        TimerTask doAsynchronousTask = new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(new Runnable() {
-                    public void run() {
-                        try {
-                            RetrieveData retrieveData = new RetrieveData();
-                            // PerformBackgroundTask this class is the class that extends AsynchTask
-                            retrieveData.execute();
-                        } catch (Exception e) {
-                            // TODO Auto-generated catch block
-                        }
-                    }
-                });
-            }
-        };
-        timer.schedule(doAsynchronousTask, 0, 10000); //execute in every 30000 ms = 30s
-    }
-
-    public void start(View view){
-        view.setVisibility(View.GONE);
-        callAsynchronousTask();
-    }
-
-    void verifyLocation(String json) throws JSONException {
+    //decodes JSON, put ID to lock activity and start it
+    private void decode(String json) throws JSONException {
         JSONObject jsonObject = new JSONObject(json);
-        String moveu = jsonObject.getString("moveu");
+        int id = jsonObject.getInt("id");
 
-        if (moveu.equals("Sim")){
-            startActivity(new Intent(MainActivity.this, Alert.class));
-        } else {
-            resetWatchdog();
-        }
+        Intent lock = new Intent(MainActivity.this, LockCar.class);
+
+        lock.putExtra("id", id);
+        startActivity(lock);
     }
 
-    private void resetWatchdog() {
-        jdbc.connect();
-    }
 }

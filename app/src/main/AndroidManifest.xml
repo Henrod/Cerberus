@@ -22,5 +22,9 @@
         <activity
             android:name=".Alert"
             android:label="ALERTA"/>
+
+        <activity android:name=".LockCar"
+                android:label="LOCK"
+            />
     </application>
 </manifest>
