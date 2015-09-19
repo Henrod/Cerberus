@@ -22,10 +22,28 @@
         android:inputType="text"
         />
 
+    <TextView
+        android:id="@+id/tv_passwd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Senha: "
+        android:textSize="30sp"
+        android:layout_below="@+id/tv_login"/>
+
+    <EditText
+        android:id="@+id/et_passwd"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/tv_passwd"
+        android:layout_toEndOf="@+id/tv_login"
+        android:layout_below="@+id/et_login"
+        android:inputType="text"
+        />
+
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_login"
+        android:layout_below="@+id/tv_passwd"
         android:layout_margin="20dp"
         android:background="#dd2200"
         android:text="Ok"

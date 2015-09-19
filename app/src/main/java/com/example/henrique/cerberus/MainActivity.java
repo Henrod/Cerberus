@@ -36,16 +36,21 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.crypto.EncryptedPrivateKeyInfo;
+
 public class MainActivity extends ActionBarActivity {
 
     EditText et_login;
-    String login, json;
+    EditText et_passwd;
+    String login, passwd, json;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +58,12 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         et_login = (EditText) findViewById(R.id.et_login);
+        et_passwd = (EditText) findViewById(R.id.et_passwd);
     }
 
     public void start_login(View view) throws JSONException {
         login = et_login.getText().toString();
+        passwd = et_passwd.getText().toString();
 
         RetrieveData retrieveData = new RetrieveData();
         // PerformBackgroundTask this class is the class that extends AsynchTask
@@ -101,6 +108,23 @@ public class MainActivity extends ActionBarActivity {
 
         lock.putExtra("id", id);
         startActivity(lock);
+    }
+
+    private class CryptWithMD5 {
+
+        private MessageDigest md;
+
+        public String cryptWithMD5(String pass) throws NoSuchAlgorithmException {
+            md = MessageDigest.getInstance("MD5");
+            byte[] passBytes = pass.getBytes();
+            md.reset();
+            byte[] digested = md.digest(passBytes);
+            StringBuilder sb = new StringBuilder();
+            for (byte aDigested : digested) {
+                sb.append(Integer.toHexString(0xff & aDigested));
+            }       
+            return sb.toString();
+        }
     }
 
 }
