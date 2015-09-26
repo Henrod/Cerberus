@@ -16,7 +16,6 @@ import android.util.Log;
 public class BroadcastReceiver extends android.content.BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("Script", "Alarme");
         check_time(context);
     }
 
@@ -26,7 +25,7 @@ public class BroadcastReceiver extends android.content.BroadcastReceiver {
                 .setContentText("Seu carro está em movimento")
                 .setSmallIcon(R.drawable.notification);
 
-        Intent intent = new Intent(context, MainActivity.class);
+        Intent intent = new Intent(context, Alert.class);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack(MainActivity.class);

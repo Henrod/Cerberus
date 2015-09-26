@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.henrique.cerberus" >
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:allowBackup="true"
@@ -26,5 +27,15 @@
         <activity android:name=".LockCar"
                 android:label="LOCK"
             />
+
+        <activity android:name=".SignUp"
+                android:label="Novo cadastro"/>
+
+        <receiver android:name=".BroadcastReceiver">
+            <intent-filter>
+                <action android:name="ALARME_DISPARADO"/>
+                <category android:name="ANDROID.INTENT.CATEGORY.DEFAULT"/>
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

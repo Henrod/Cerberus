@@ -32,8 +32,6 @@ public class LockCar extends Activity {
     TextView tv_time;
     String json;
 
-    JDBC jdbc;
-
     private int id;
 
     @Override
@@ -48,9 +46,13 @@ public class LockCar extends Activity {
         tv_moveu = (TextView) findViewById(R.id.moveu);
         tv_time = (TextView) findViewById(R.id.time);
 
-        id = getIntent().getIntExtra("id", 0);
+        tv_id.setVisibility(View.VISIBLE);
+        tv_lat.setVisibility(View.VISIBLE);
+        tv_long.setVisibility(View.VISIBLE);
+        tv_moveu.setVisibility(View.VISIBLE);
+        tv_time.setVisibility(View.VISIBLE);
 
-        jdbc = new JDBC();
+        id = getIntent().getIntExtra("id", 0);
     }
 
     private String decode(String json) throws JSONException {
@@ -67,9 +69,6 @@ public class LockCar extends Activity {
         Double json_time = jsonObject.getDouble("time");
         tv_time.setText("Tempo servidor: " + json_time);
 
-        //Date date_now = new Date();
-        //tv_time.setText("Time now: " + date_now.getTime());
-
         return null;
     }
 
@@ -81,7 +80,7 @@ public class LockCar extends Activity {
             //establish server socker
 
             try {
-                URL server = new URL("http://172.21.221.95/cerberus/get_infos.php?id_java=" + id);//"http://10.0.7.12/cerberus/teste.php");
+                URL server = new URL(MainActivity.ip_server + "get_infos.php?id_java=" + id);
                 BufferedReader in = new BufferedReader(new InputStreamReader(server.openStream()));
                 json = in.readLine();
             } catch (IOException e) {
@@ -146,10 +145,6 @@ public class LockCar extends Activity {
         if (moveu.equals("Sim") || passed_time(time_server)){
             startActivity(new Intent(LockCar.this, Alert.class));
         }
-    }
-
-    private void resetWatchdog() {
-        jdbc.connect();
     }
 
     private boolean passed_time(double time_server) {

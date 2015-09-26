@@ -15,6 +15,7 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -48,6 +49,8 @@ import javax.crypto.EncryptedPrivateKeyInfo;
 
 public class MainActivity extends ActionBarActivity {
 
+    public static final String ip_server = "http://192.168.1.111/cerberus/";
+
     EditText et_login;
     EditText et_passwd;
     String login, passwd, json;
@@ -61,9 +64,12 @@ public class MainActivity extends ActionBarActivity {
         et_passwd = (EditText) findViewById(R.id.et_passwd);
     }
 
-    public void start_login(View view) throws JSONException {
+    public void start_login(View view) throws JSONException, NoSuchAlgorithmException {
         login = et_login.getText().toString();
         passwd = et_passwd.getText().toString();
+
+        passwd = CryptWithMD5.cryptWithMD5(passwd);
+        Log.d("crypt", passwd);
 
         RetrieveData retrieveData = new RetrieveData();
         // PerformBackgroundTask this class is the class that extends AsynchTask
@@ -77,7 +83,8 @@ public class MainActivity extends ActionBarActivity {
             //establish server socker
 
             try {
-                URL server = new URL("http://172.21.221.95/cerberus/get_login.php?login_java=" + login);//"http://10.0.7.12/cerberus/teste.php");
+                URL server = new URL(ip_server + "get_login.php?login_java=" + login +
+                                        "&senha_java=" + passwd);
                 BufferedReader in = new BufferedReader(new InputStreamReader(server.openStream()));
                 json = in.readLine();
             } catch (IOException e) {
@@ -87,11 +94,11 @@ public class MainActivity extends ActionBarActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    try {
+                    if (json != null)
                         decode(json);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    else
+                        Toast.makeText(MainActivity.this, "Teste novamente mais tarde :(", Toast.LENGTH_LONG).show();
+
                 }
             });
 
@@ -100,31 +107,38 @@ public class MainActivity extends ActionBarActivity {
     }
 
     //decodes JSON, put ID to lock activity and start it
-    private void decode(String json) throws JSONException {
-        JSONObject jsonObject = new JSONObject(json);
-        int id = jsonObject.getInt("id");
+    private void decode(String json) {
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+            int id = jsonObject.getInt("id");
 
-        Intent lock = new Intent(MainActivity.this, LockCar.class);
+            Intent lock = new Intent(MainActivity.this, LockCar.class);
 
-        lock.putExtra("id", id);
-        startActivity(lock);
+            lock.putExtra("id", id);
+            startActivity(lock);
+        } catch (JSONException e) {
+            Toast.makeText(MainActivity.this, "Senha ou login incorretos", Toast.LENGTH_LONG).show();
+        }
     }
 
-    private class CryptWithMD5 {
+    public static class CryptWithMD5 {
 
-        private MessageDigest md;
-
-        public String cryptWithMD5(String pass) throws NoSuchAlgorithmException {
-            md = MessageDigest.getInstance("MD5");
+        public static String cryptWithMD5(String pass) throws NoSuchAlgorithmException {
+            MessageDigest md;
+            md = MessageDigest.getInstance("SHA-256");
             byte[] passBytes = pass.getBytes();
             md.reset();
             byte[] digested = md.digest(passBytes);
             StringBuilder sb = new StringBuilder();
             for (byte aDigested : digested) {
                 sb.append(Integer.toHexString(0xff & aDigested));
-            }       
+            }
             return sb.toString();
         }
+    }
+
+    public void start_signup(View view) {
+        startActivity(new Intent(MainActivity.this, SignUp.class));
     }
 
 }
