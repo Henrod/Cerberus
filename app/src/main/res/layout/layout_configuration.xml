@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16sp"
+    >
+
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TableRow>
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="Modo de operação:"
+                android:textSize="20dp"/>
+        </TableRow>
+            <RadioGroup
+                android:id="@+id/radioMode"
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                >
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Segurança total"
+                    android:id="@+id/radioSeg"
+                    android:layout_gravity="center_horizontal"
+                    />
+
+                <RadioButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Manobrista"
+                    android:id="@+id/radioMan"
+                    android:layout_gravity="center_horizontal" />
+            </RadioGroup>
+
+    </TableLayout>
+
+    <Button
+        android:id="@+id/configButton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#000044"
+        android:textColor="#ffffff"
+        android:layout_gravity="center"
+        android:text="Retornar"
+        android:layout_margin="50dp"
+        android:onClick="retornar"/>
+
+</LinearLayout>

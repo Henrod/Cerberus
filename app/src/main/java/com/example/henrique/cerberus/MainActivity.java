@@ -49,7 +49,7 @@ import javax.crypto.EncryptedPrivateKeyInfo;
 
 public class MainActivity extends ActionBarActivity {
 
-    public static final String ip_server = "http://192.168.1.111/cerberus/";
+    public static final String ip_server = "http://192.168.1.112/cerberus/";
 
     EditText et_login;
     EditText et_passwd;
@@ -68,8 +68,7 @@ public class MainActivity extends ActionBarActivity {
         login = et_login.getText().toString();
         passwd = et_passwd.getText().toString();
 
-        passwd = CryptWithMD5.cryptWithMD5(passwd);
-        Log.d("crypt", passwd);
+        passwd = CryptWith.cryptWith(passwd);
 
         RetrieveData retrieveData = new RetrieveData();
         // PerformBackgroundTask this class is the class that extends AsynchTask
@@ -113,7 +112,6 @@ public class MainActivity extends ActionBarActivity {
             int id = jsonObject.getInt("id");
 
             Intent lock = new Intent(MainActivity.this, LockCar.class);
-
             lock.putExtra("id", id);
             startActivity(lock);
         } catch (JSONException e) {
@@ -121,9 +119,9 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public static class CryptWithMD5 {
+    public static class CryptWith {
 
-        public static String cryptWithMD5(String pass) throws NoSuchAlgorithmException {
+        public static String cryptWith(String pass) throws NoSuchAlgorithmException {
             MessageDigest md;
             md = MessageDigest.getInstance("SHA-256");
             byte[] passBytes = pass.getBytes();

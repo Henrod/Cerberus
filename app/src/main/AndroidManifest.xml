@@ -7,7 +7,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo_cerberus"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
@@ -22,7 +22,8 @@
 
         <activity
             android:name=".Alert"
-            android:label="ALERTA"/>
+            android:label="ALERTA"
+            android:noHistory="true"/>
 
         <activity android:name=".LockCar"
                 android:label="LOCK"
@@ -30,6 +31,9 @@
 
         <activity android:name=".SignUp"
                 android:label="Novo cadastro"/>
+
+        <activity android:name=".Configuration"
+                android:label="Configurações" />
 
         <receiver android:name=".BroadcastReceiver">
             <intent-filter>

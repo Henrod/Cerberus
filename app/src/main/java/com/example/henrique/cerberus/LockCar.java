@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -24,15 +25,18 @@ import java.util.TimerTask;
  */
 public class LockCar extends Activity {
 
-    TextView textView;
-    TextView tv_id;
-    TextView tv_lat;
-    TextView tv_long;
-    TextView tv_moveu;
-    TextView tv_time;
-    String json;
+    private TextView textView;
+    private TextView tv_id;
+    private TextView tv_lat;
+    private TextView tv_long;
+    private TextView tv_moveu;
+    private TextView tv_time;
+    private TextView tv_mode;
+    private String json;
 
     private int id;
+
+    public static RetrieveData retrieveData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +49,7 @@ public class LockCar extends Activity {
         tv_long = (TextView) findViewById(R.id._long);
         tv_moveu = (TextView) findViewById(R.id.moveu);
         tv_time = (TextView) findViewById(R.id.time);
-
-        tv_id.setVisibility(View.VISIBLE);
-        tv_lat.setVisibility(View.VISIBLE);
-        tv_long.setVisibility(View.VISIBLE);
-        tv_moveu.setVisibility(View.VISIBLE);
-        tv_time.setVisibility(View.VISIBLE);
+        tv_mode = (TextView) findViewById(R.id.mode);
 
         id = getIntent().getIntExtra("id", 0);
     }
@@ -68,6 +67,8 @@ public class LockCar extends Activity {
         tv_moveu.setText("Moveu: " + json_moveu);
         Double json_time = jsonObject.getDouble("time");
         tv_time.setText("Tempo servidor: " + json_time);
+        String json_mode = jsonObject.getString("mode");
+        tv_mode.setText("Modo de operação: " + json_mode);
 
         return null;
     }
@@ -102,7 +103,7 @@ public class LockCar extends Activity {
                         textView.setText("Erro: Sem conexão com IP do servidor");
                     }
                 }
-            });
+            });;
 
             return null;
         }
@@ -119,11 +120,11 @@ public class LockCar extends Activity {
                 handler.post(new Runnable() {
                     public void run() {
                         try {
-                            RetrieveData retrieveData = new RetrieveData();
+                            retrieveData = new RetrieveData();
                             // PerformBackgroundTask this class is the class that extends AsynchTask
                             retrieveData.execute();
                         } catch (Exception e) {
-                            // TODO Auto-generated catch block
+                            e.printStackTrace();
                         }
                     }
                 });
@@ -134,6 +135,14 @@ public class LockCar extends Activity {
 
     public void start(View view){
         view.setVisibility(View.GONE);
+
+        tv_id.setVisibility(View.VISIBLE);
+        tv_lat.setVisibility(View.VISIBLE);
+        tv_long.setVisibility(View.VISIBLE);
+        tv_moveu.setVisibility(View.VISIBLE);
+        tv_time.setVisibility(View.VISIBLE);
+        tv_mode.setVisibility(View.VISIBLE);
+
         callAsynchronousTask();
     }
 
@@ -154,4 +163,11 @@ public class LockCar extends Activity {
 
         return time_now >= 30000 + time_server;
     }
+
+    public void configuration(View view) {
+        Intent config = new Intent(LockCar.this, Configuration.class);
+        config.putExtra("id", id);
+        startActivity(config);
+    }
+
 }

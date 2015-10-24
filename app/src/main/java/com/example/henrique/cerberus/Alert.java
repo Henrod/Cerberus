@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.Time;
+import android.view.View;
 
 import java.util.Calendar;
 
@@ -37,5 +38,9 @@ public class Alert extends Activity {
         calendar.set(Calendar.SECOND, now.second);
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+    }
+
+    public void stopNotification(View view) {
+        LockCar.retrieveData.cancel(true);
     }
 }

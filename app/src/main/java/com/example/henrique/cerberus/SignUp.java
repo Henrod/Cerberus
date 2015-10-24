@@ -40,7 +40,7 @@ public class SignUp extends Activity {
 
         if(passwd.equals(passwd_confirm)){
             findViewById(R.id.ok_button).setClickable(false);
-            passwd = MainActivity.CryptWithMD5.cryptWithMD5(passwd);
+            passwd = MainActivity.CryptWith.cryptWith(passwd);
             (new RetrieveData()).doInBackground();
         } else {
             Toast.makeText(SignUp.this, "Senhas não correspondentes", Toast.LENGTH_LONG).show();

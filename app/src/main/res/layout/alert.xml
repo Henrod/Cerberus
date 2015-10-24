@@ -6,12 +6,32 @@
 
     <TextView
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:text="ATENÇÃO!"
         android:textColor="#ffffff"
         android:textSize="60sp"
-        android:layout_gravity="center"
-        android:gravity="center"
+        android:gravity="center|top"
         />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center|bottom"
+        android:orientation="vertical">
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#000044"
+            android:textColor="#ffffff"
+            android:layout_gravity="center"
+            android:text="Parar notificações"
+            android:layout_margin="50dp"
+            android:layout_weight="0"
+            android:onClick="stopNotification"
+            />
+
+    </LinearLayout>
 
 </LinearLayout>
