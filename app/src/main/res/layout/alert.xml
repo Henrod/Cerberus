@@ -4,12 +4,23 @@
     android:layout_height="match_parent"
     android:background="#660000">
 
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#000044"
+        android:textColor="#ffffff"
+        android:layout_gravity="center"
+        android:text="Parar notificações"
+        android:layout_weight="0"
+        android:onClick="stopNotification"
+        />
+
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="ATENÇÃO!"
         android:textColor="#ffffff"
-        android:textSize="60sp"
+        android:textSize="40sp"
         android:gravity="center|top"
         />
 
@@ -20,17 +31,12 @@
         android:gravity="center|bottom"
         android:orientation="vertical">
 
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="#000044"
-            android:textColor="#ffffff"
-            android:layout_gravity="center"
-            android:text="Parar notificações"
-            android:layout_margin="50dp"
-            android:layout_weight="0"
-            android:onClick="stopNotification"
-            />
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+            android:layout_height="0dp" android:id="@+id/map" tools:context=".MapsActivity"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            tools:layout="@layout/abc_screen_simple" android:layout_weight="0">
+        </fragment>
 
     </LinearLayout>
 

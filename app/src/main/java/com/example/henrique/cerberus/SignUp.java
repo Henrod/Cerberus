@@ -19,21 +19,23 @@ import java.security.NoSuchAlgorithmException;
  * Created by henrique on 19/09/15.
  */
 public class SignUp extends Activity {
-    EditText et_login, et_passwd, et_passwd_confirm;
-    String login, passwd, passwd_confirm;
-    boolean msg = false, login_exist = false;
+    EditText et_login, et_passwd, et_passwd_confirm, et_id_rasp;
+    String login, passwd, passwd_confirm, id_rasp;
+    boolean msg = false, login_exist = false, rasp_exist = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        et_login = (EditText) findViewById(R.id.et_login_sign);
-        et_passwd = (EditText) findViewById(R.id.et_passwd_sign);
-        et_passwd_confirm = (EditText) findViewById(R.id.et_passwd_confirm);
+        et_login            = (EditText) findViewById(R.id.et_login_sign);
+        et_passwd           = (EditText) findViewById(R.id.et_passwd_sign);
+        et_passwd_confirm   = (EditText) findViewById(R.id.et_passwd_confirm);
+        et_id_rasp          = (EditText) findViewById(R.id.et_rasp_id);
     }
 
     public void new_register(View view) throws NoSuchAlgorithmException {
+        id_rasp = et_id_rasp.getText().toString();
         login = et_login.getText().toString();
         passwd = et_passwd.getText().toString();
         passwd_confirm = et_passwd_confirm.getText().toString();
@@ -51,7 +53,7 @@ public class SignUp extends Activity {
 
         @Override
         protected String doInBackground(String... params) {
-            //establish server socker
+            //establish server socket
 
             new Thread(){
                 @Override
@@ -61,13 +63,20 @@ public class SignUp extends Activity {
                     BufferedReader in;
                     try {
                         URL server = new URL(MainActivity.ip_server + "set_login.php?login_java=" + login +
-                                "&senha_java=" + passwd);
+                                "&senha_java=" + passwd + "&id_rasp=" + id_rasp);
                         in = new BufferedReader(new InputStreamReader(server.openStream()));
-                        if(in.readLine().equals("Login já existente")) {
-                            login_exist = true;
-                        } else {
-                            msg = true;
-                            startActivity(new Intent(SignUp.this, MainActivity.class));
+                        String message = in.readLine();
+                        switch (message) {
+                            case "Login já existente":
+                                login_exist = true;
+                                break;
+                            case "Dispositivo já em uso":
+                                rasp_exist = true;
+                                break;
+                            default:
+                                msg = true;
+                                startActivity(new Intent(SignUp.this, MainActivity.class));
+                                break;
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -86,10 +95,16 @@ public class SignUp extends Activity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            while (login_exist) {
-                                login_exist = false;
-                                Toast.makeText(SignUp.this, "Login já existente. Por favor escolha outro.", Toast.LENGTH_LONG).show();
-                                findViewById(R.id.ok_button).setClickable(true);
+                            while (login_exist || rasp_exist) {
+                                if(login_exist) {
+                                    login_exist = false;
+                                    Toast.makeText(SignUp.this, "Login já existente. Por favor escolha outro.", Toast.LENGTH_LONG).show();
+                                    findViewById(R.id.ok_button).setClickable(true);
+                                } else if(rasp_exist) {
+                                    login_exist = false;
+                                    Toast.makeText(SignUp.this, "Dispositivo já em uso. Adicione o correto ID.", Toast.LENGTH_LONG).show();
+                                    findViewById(R.id.ok_button).setClickable(true);
+                                }
                             }
                         }
                     });
