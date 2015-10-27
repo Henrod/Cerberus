@@ -1,11 +1,13 @@
 import random
 import sys
 import math
+from time import sleep
 from math import sin, cos, sqrt, atan2, radians
 import pymysql.cursors
 
-latitude = 19.99
-longitude = 73.78
+
+
+
 
 
  
@@ -45,11 +47,6 @@ def moveu ((lat1,lon1),(lat2,lon2)):
 			return False
 		else:
 			return True
-
-
-
-print moveu(randomLatLong(latitude,longitude),randomLatLong(latitude,longitude))
-
 '''
 
 randomLatLong (latitude,longitude) devolve uma tupla da forma (latitude2,longitude2) calculada a partir de uma pequena variavao a partir de latitude,longitude
@@ -58,7 +55,26 @@ a funcao moveu recebe como parametros duas tuplas de (latitude,longitude) e calc
 
 '''
 
+
+
+
+
+
+
+
+i = 0
+
+'''parametros iniciais'''
+latitude = 19.99
+longitude = 73.78
+
+
+posAtual = latitude,longitude
+
 # Connect to the database
+
+
+'''
 connection = pymysql.connect(host='us-cdbr-iron-east-02.cleardb.net',
                              user='be50af336a3134',
                              password='324da5dd',
@@ -66,26 +82,65 @@ connection = pymysql.connect(host='us-cdbr-iron-east-02.cleardb.net',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
 
+'''
+
+connection = pymysql.connect(host='localhost',
+                             user='root',
+                             password='12345',
+                             db='cerberus_db',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
 
 #mysql://be50af336a3134:324da5dd@us-cdbr-iron-east-02.cleardb.net/heroku_34cfa57a696e63d?reconnect=true
 
-try:
-    with connection.cursor() as cursor:
-        # Create a new record
-        sql = "CREATE TABLE usersteste (email VARCHAR(20) , password VARCHAR(20)"
-        cursor.execute(sql)
-        sql = "INSERT INTO `usersteste` (`email`, `password`) VALUES (%s, %s)"
-        cursor.execute(sql, ('cerberus@lira.org', '123456'))
+id_do_raspi = 121314247274242
 
-    # connection is not autocommit by default. So you must commit to save
-    # your changes.
-    connection.commit()
 
-    with connection.cursor() as cursor:
-        # Read a single record
-        sql = "SELECT `id`, `password`, `email` FROM `usersteste` WHERE `email`=%s"
-        cursor.execute(sql, ('cerberus@lira.org',))
-        result = cursor.fetchone()
-        print(result)
-finally:
-    connection.close()
+while (True): #loop principal
+
+    i+=1
+
+    #sleep(5) #roda a cada 5 segundos
+    
+    
+    novaPos = randomLatLong(posAtual)
+
+    moveuBool = moveu(novaPos,posAtual) #bool que fala se moveu ou nao
+
+    posAtual = novaPos #atualiza as coisas
+
+
+
+    try:
+        with connection.cursor() as cursor:
+            # Create a new record
+            
+            sql = "UPDATE `users` SET lat = %s long = %s  moveu = %s WHERE id = %s  "
+            cursor.execute(sql, (novaPos[0], novaPos[1], moveuBool ,id_do_raspi))
+
+
+
+        # connection is not autocommit by default. So you must commit to save
+        # your changes.
+        connection.commit()
+
+        with connection.cursor() as cursor:
+            # Read a single record
+            sql = "SELECT `id`, `lat`, `long` FROM `users` WHERE `id`=%s"
+            cursor.execute(sql, id_do_raspi)
+            result = cursor.fetchone()
+            print(result)
+
+    finally:
+        pass
+
+
+
+
+    if (i==5): #tirar isso depois, eh soh pra o programa nao rodar pra sempre nos testes
+        break
+
+
+
+
+connection.close()
