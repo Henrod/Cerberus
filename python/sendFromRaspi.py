@@ -8,9 +8,6 @@ import pymysql.cursors
 
 
 
-
-
- 
 def distance_on_unit_sphere(lat1, lon1, lat2, lon2):
  
 	R = 6373.0 #earth radius
@@ -36,9 +33,11 @@ def truncate(f, n):
 
 
 def randomLatLong(latitude,longitude): #lat e long iniciais
-	dec_lat = random.random()/1000
-	dec_lon = random.random()/1000
-	return truncate(dec_lat+latitude,6),truncate(dec_lon+longitude,6)
+    lat = float(latitude)
+    lon = float(longitude)
+    dec_lat = random.random()/1000
+    dec_lon = random.random()/1000
+    return truncate(dec_lat+lat,6),truncate(dec_lon+lon,6)
 
 
 def moveu ((lat1,lon1),(lat2,lon2)):
@@ -47,6 +46,8 @@ def moveu ((lat1,lon1),(lat2,lon2)):
 			return False
 		else:
 			return True
+
+
 '''
 
 randomLatLong (latitude,longitude) devolve uma tupla da forma (latitude2,longitude2) calculada a partir de uma pequena variavao a partir de latitude,longitude
@@ -54,26 +55,12 @@ randomLatLong (latitude,longitude) devolve uma tupla da forma (latitude2,longitu
 a funcao moveu recebe como parametros duas tuplas de (latitude,longitude) e calcula uma aproximacao da distancia geodesica das duas. Uma aproximacao grosseira e errada mas que deve servir pra os nossos propositos. Se vc estiver lendo isso Henrique, your the boss.
 
 '''
-
-
-
-
-
-
-
-
 i = 0
-
 '''parametros iniciais'''
 latitude = 19.99
 longitude = 73.78
-
-
 posAtual = latitude,longitude
-
 # Connect to the database
-
-
 '''
 connection = pymysql.connect(host='us-cdbr-iron-east-02.cleardb.net',
                              user='be50af336a3134',
@@ -86,14 +73,14 @@ connection = pymysql.connect(host='us-cdbr-iron-east-02.cleardb.net',
 
 connection = pymysql.connect(host='localhost',
                              user='root',
-                             password='12345',
-                             db='cerberus_db',
+                             password='123456',
+                             db='mydb',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
 
 #mysql://be50af336a3134:324da5dd@us-cdbr-iron-east-02.cleardb.net/heroku_34cfa57a696e63d?reconnect=true
 
-id_do_raspi = 121314247274242
+id_do_raspi = 1213142
 
 
 while (True): #loop principal
@@ -103,20 +90,21 @@ while (True): #loop principal
     #sleep(5) #roda a cada 5 segundos
     
     
-    novaPos = randomLatLong(posAtual)
+    novaPos = randomLatLong(posAtual[0],posAtual[1])
 
     moveuBool = moveu(novaPos,posAtual) #bool que fala se moveu ou nao
 
     posAtual = novaPos #atualiza as coisas
 
+    
 
 
     try:
         with connection.cursor() as cursor:
             # Create a new record
             
-            sql = "UPDATE `users` SET lat = %s long = %s  moveu = %s WHERE id = %s  "
-            cursor.execute(sql, (novaPos[0], novaPos[1], moveuBool ,id_do_raspi))
+            sql = "UPDATE `users` SET `lat` = %s , `long` = %s  , `moveu` = %s WHERE `id` = %s"
+            cursor.execute(sql, (str(novaPos[0]), str(novaPos[1]), moveuBool,str(id_do_raspi)))
 
 
 
