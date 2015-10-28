@@ -10,18 +10,19 @@ import pymysql.cursors
 
 def distance_on_unit_sphere(lat1, lon1, lat2, lon2):
  
-	R = 6373.0 #earth radius
+    R = 6373.0 #earth radius
 
-	dlon = float(lon2) - float(lon1)
-	dlat = float(lat2) - float(lat1)
-	
+    dlon = float(lon2) - float(lon1)
+    dlat = float(lat2) - float(lat1)
+    
 
 
-	a = sin(dlat / 2)**2 + cos(float(lat1)) * cos(float(lat2)) * sin(dlon / 2)**2
-	c = 2 * atan2(sqrt(a), sqrt(1 - a))
+    a = sin(dlat / 2)**2 + cos(float(lat1)) * cos(float(lat2)) * sin(dlon / 2)**2
+    c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
-	distance = R * c
-	return distance #distancia em metros
+    distance = R * c
+    print "Distancia eh",truncate(distance,2) 
+    return distance #distancia em metros
 
 
 
@@ -41,11 +42,13 @@ def randomLatLong(latitude,longitude): #lat e long iniciais
 
 
 def moveu ((lat1,lon1),(lat2,lon2)):
-		epsulon = 2 #incerteza em metros
-		if  ( abs(distance_on_unit_sphere(lat1,lon1,lat2,lon2) - epsulon) < 1.0) :
-			return False
-		else:
-			return True
+        epsulon = 2 #incerteza em metros
+        
+        if  ( abs(distance_on_unit_sphere(lat1,lon1,lat2,lon2) - epsulon) < abs(1.0 + epsulon)) :
+            
+            return False
+        else:
+            return True
 
 
 '''
@@ -59,7 +62,9 @@ i = 0
 '''parametros iniciais'''
 latitude = 19.99
 longitude = 73.78
-posAtual = latitude,longitude
+posInicial = randomLatLong(latitude,longitude)
+
+posAtual = posInicial
 # Connect to the database
 '''
 connection = pymysql.connect(host='us-cdbr-iron-east-02.cleardb.net',
@@ -87,13 +92,13 @@ while (True): #loop principal
 
     i+=1
 
-    #sleep(5) #roda a cada 5 segundos
+    #sleep(1) #roda a cada 5 segundos
     
     
     novaPos = randomLatLong(posAtual[0],posAtual[1])
 
-    moveuBool = moveu(novaPos,posAtual) #bool que fala se moveu ou nao
-
+    moveuBool = moveu(posInicial,posAtual) #bool que fala se moveu ou nao
+    
     posAtual = novaPos #atualiza as coisas
 
     
@@ -114,7 +119,7 @@ while (True): #loop principal
 
         with connection.cursor() as cursor:
             # Read a single record
-            sql = "SELECT `id`, `lat`, `long` FROM `users` WHERE `id`=%s"
+            sql = "SELECT `id`, `lat`, `long` ,`moveu` FROM `users` WHERE `id`=%s"
             cursor.execute(sql, id_do_raspi)
             result = cursor.fetchone()
             print(result)
@@ -125,7 +130,7 @@ while (True): #loop principal
 
 
 
-    if (i==5): #tirar isso depois, eh soh pra o programa nao rodar pra sempre nos testes
+    if (i==20): #tirar isso depois, eh soh pra o programa nao rodar pra sempre nos testes
         break
 
 
