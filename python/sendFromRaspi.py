@@ -5,17 +5,12 @@ from time import sleep
 from math import sin, cos, sqrt, atan2, radians
 import pymysql.cursors
 
-
-
-
 def distance_on_unit_sphere(lat1, lon1, lat2, lon2):
  
     R = 6373.0 #earth radius
 
     dlon = float(lon2) - float(lon1)
     dlat = float(lat2) - float(lat1)
-    
-
 
     a = sin(dlat / 2)**2 + cos(float(lat1)) * cos(float(lat2)) * sin(dlon / 2)**2
     c = 2 * atan2(sqrt(a), sqrt(1 - a))
@@ -23,8 +18,6 @@ def distance_on_unit_sphere(lat1, lon1, lat2, lon2):
     distance = R * c
     print "Distancia eh",truncate(distance,2) 
     return distance #distancia em metros
-
-
 
 def truncate(f, n):
     '''Truncates/pads a float f to n decimal places without rounding'''
@@ -46,9 +39,9 @@ def moveu ((lat1,lon1),(lat2,lon2)):
         
         if  ( abs(distance_on_unit_sphere(lat1,lon1,lat2,lon2) - epsulon) < abs(1.0 + epsulon)) :
             
-            return False
+            return "Nao"
         else:
-            return True
+            return "Sim"
 
 
 '''
@@ -60,8 +53,8 @@ a funcao moveu recebe como parametros duas tuplas de (latitude,longitude) e calc
 '''
 i = 0
 '''parametros iniciais'''
-latitude = 19.99
-longitude = 73.78
+latitude = -46.6
+longitude = -23.6
 posInicial = randomLatLong(latitude,longitude)
 
 posAtual = posInicial
@@ -78,14 +71,14 @@ connection = pymysql.connect(host='us-cdbr-iron-east-02.cleardb.net',
 
 connection = pymysql.connect(host='localhost',
                              user='root',
-                             password='123456',
-                             db='mydb',
+                             password='12345',
+                             db='cerberus_db',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
 
 #mysql://be50af336a3134:324da5dd@us-cdbr-iron-east-02.cleardb.net/heroku_34cfa57a696e63d?reconnect=true
 
-id_do_raspi = 1213142
+id_do_raspi = 123
 
 
 while (True): #loop principal
@@ -108,7 +101,7 @@ while (True): #loop principal
         with connection.cursor() as cursor:
             # Create a new record
             
-            sql = "UPDATE `users` SET `lat` = %s , `long` = %s  , `moveu` = %s WHERE `id` = %s"
+            sql = "UPDATE `users` SET `lat` = %s , `long` = %s  , `moveu` = %s WHERE `id_rasp` = %s"
             cursor.execute(sql, (str(novaPos[0]), str(novaPos[1]), moveuBool,str(id_do_raspi)))
 
 
@@ -119,7 +112,7 @@ while (True): #loop principal
 
         with connection.cursor() as cursor:
             # Read a single record
-            sql = "SELECT `id`, `lat`, `long` ,`moveu` FROM `users` WHERE `id`=%s"
+            sql = "SELECT `id`, `lat`, `long` ,`moveu` FROM `users` WHERE `id_rasp`=%s"
             cursor.execute(sql, id_do_raspi)
             result = cursor.fetchone()
             print(result)

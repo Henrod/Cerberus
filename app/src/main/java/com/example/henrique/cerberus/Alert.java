@@ -5,14 +5,18 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -25,16 +29,19 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 /**
  * Created by henrique on 08/09/15.
  */
-public class Alert extends FragmentActivity {
+public class Alert extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap googleMap;
     private int id;
     private static long longitude, latitude;
+    private Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +49,12 @@ public class Alert extends FragmentActivity {
         setContentView(R.layout.alert);
 
         id = getIntent().getIntExtra("id", 0);
-        setUpMap();
+
+        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+        (new RetrieveData()).execute();
+
         startAlarm();
     }
 
@@ -55,11 +67,13 @@ public class Alert extends FragmentActivity {
         }
     }
 
-    private void setMarker() {
-            LatLng coordinate = new LatLng(latitude, longitude);
+    private GoogleMap setMarker() {
+            LatLng coordinate = new LatLng(-46.6, -23.6);
             CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 17);
             googleMap.animateCamera(yourLocation);
             googleMap.addMarker(new MarkerOptions().position(coordinate));
+
+            return googleMap;
     }
 
     private void startAlarm() {
@@ -84,6 +98,15 @@ public class Alert extends FragmentActivity {
         LockCar.retrieveData.cancel(true);
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        LatLng coordinate = new LatLng(-46.6, -23.6);
+        Log.d("loca", "(" + latitude + ", " + longitude + ")");
+        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 17);
+        googleMap.animateCamera(yourLocation);
+        googleMap.addMarker(new MarkerOptions().position(coordinate));
+    }
+
     class RetrieveData extends AsyncTask<String, String, String> {
 
         String json = "";
@@ -106,7 +129,7 @@ public class Alert extends FragmentActivity {
                     if (json != null) {
                         decode(json);
                         if (googleMap != null) {
-                            setMarker();
+                            onMapReady(setMarker());
                         }
                     } else
                         Toast.makeText(Alert.this, "Não foi possível obter os dados :(", Toast.LENGTH_LONG).show();
@@ -117,14 +140,28 @@ public class Alert extends FragmentActivity {
             return null;
         }
 
-        private void decode(String json) {
-            try {
-                JSONObject jsonObject = new JSONObject(json);
-                latitude = jsonObject.getLong("lat");
-                longitude = jsonObject.getLong("long");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+
+
+        private void decode(final String json) {
+            final Handler handler = new Handler();
+            timer = new Timer();
+            TimerTask doAsynchronousTask = new TimerTask() {
+                @Override
+                public void run() {
+                    handler.post(new Runnable() {
+                        public void run() {
+                            try {
+                                JSONObject jsonObject = new JSONObject(json);
+                                latitude = jsonObject.getLong("lat");
+                                longitude = jsonObject.getLong("long");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            };
+            timer.schedule(doAsynchronousTask, 0, 10000); //execute in every 30000 ms = 30s
         }
     }
 }

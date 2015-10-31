@@ -20,7 +20,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends ActionBarActivity {
 
-    public static final String ip_server = "http://10.0.0.2/cerberus/";
+    public static final String ip_server = "http://192.168.1.110/cerberus/";
 
     EditText et_login;
     EditText et_passwd;

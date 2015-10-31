@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -25,7 +24,6 @@ import java.util.TimerTask;
  */
 public class LockCar extends Activity {
 
-    private TextView textView;
     private TextView tv_id;
     private TextView tv_lat;
     private TextView tv_long;
@@ -36,6 +34,8 @@ public class LockCar extends Activity {
 
     private int id;
 
+    Timer timer;
+
     public static RetrieveData retrieveData;
 
     @Override
@@ -43,7 +43,6 @@ public class LockCar extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lock);
 
-        textView = (TextView) findViewById(R.id.textview);
         tv_id = (TextView) findViewById(R.id.id);
         tv_lat = (TextView) findViewById(R.id.lat);
         tv_long = (TextView) findViewById(R.id._long);
@@ -97,11 +96,6 @@ public class LockCar extends Activity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    if (json != null) {
-                        textView.setText("JSON capturado: " + json);
-                    } else {
-                        textView.setText("Erro: Sem conexão com IP do servidor");
-                    }
                 }
             });;
 
@@ -113,7 +107,7 @@ public class LockCar extends Activity {
 
     public void callAsynchronousTask() {
         final Handler handler = new Handler();
-        Timer timer = new Timer();
+        timer = new Timer();
         TimerTask doAsynchronousTask = new TimerTask() {
             @Override
             public void run() {
@@ -121,7 +115,6 @@ public class LockCar extends Activity {
                     public void run() {
                         try {
                             retrieveData = new RetrieveData();
-                            // PerformBackgroundTask this class is the class that extends AsynchTask
                             retrieveData.execute();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -152,7 +145,10 @@ public class LockCar extends Activity {
         Double time_server = jsonObject.getDouble("time");
 
         if (moveu.equals("Sim") || passed_time(time_server)){
-            startActivity(new Intent(LockCar.this, Alert.class));
+            timer.cancel();
+            Intent alert = new Intent(LockCar.this, Alert.class);
+            alert.putExtra("id", id);
+            startActivity(alert);
         }
     }
 
