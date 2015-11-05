@@ -53,8 +53,8 @@ a funcao moveu recebe como parametros duas tuplas de (latitude,longitude) e calc
 '''
 i = 0
 '''parametros iniciais'''
-latitude = -46.6
-longitude = -23.6
+longitude = -46.59
+latitude = -23.62
 posInicial = randomLatLong(latitude,longitude)
 
 posAtual = posInicial
@@ -83,19 +83,11 @@ id_do_raspi = 123
 
 while (True): #loop principal
 
-    i+=1
-
-    #sleep(1) #roda a cada 5 segundos
-    
-    
     novaPos = randomLatLong(posAtual[0],posAtual[1])
 
     moveuBool = moveu(posInicial,posAtual) #bool que fala se moveu ou nao
     
     posAtual = novaPos #atualiza as coisas
-
-    
-
 
     try:
         with connection.cursor() as cursor:
@@ -120,13 +112,6 @@ while (True): #loop principal
     finally:
         pass
 
-
-
-
-    if (i==20): #tirar isso depois, eh soh pra o programa nao rodar pra sempre nos testes
-        break
-
-
-
+    sleep(10) #roda a cada 5 segundos
 
 connection.close()
