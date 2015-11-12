@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -25,6 +26,7 @@ import java.util.TimerTask;
 public class LockCar extends Activity {
 
     private TextView tv_id;
+    private TextView tv_id_rasp;
     private TextView tv_lat;
     private TextView tv_long;
     private TextView tv_moveu;
@@ -32,7 +34,7 @@ public class LockCar extends Activity {
     private TextView tv_mode;
     private String json;
 
-    private int id;
+    private String id_rasp;
 
     Timer timer;
 
@@ -44,13 +46,15 @@ public class LockCar extends Activity {
         setContentView(R.layout.activity_lock);
 
         tv_id = (TextView) findViewById(R.id.id);
+        tv_id_rasp = (TextView) findViewById(R.id.id_rasp);
         tv_lat = (TextView) findViewById(R.id.lat);
         tv_long = (TextView) findViewById(R.id._long);
         tv_moveu = (TextView) findViewById(R.id.moveu);
         tv_time = (TextView) findViewById(R.id.time);
         tv_mode = (TextView) findViewById(R.id.mode);
 
-        id = getIntent().getIntExtra("id", 0);
+        id_rasp = getIntent().getStringExtra("id_rasp");
+        Log.d("id_rasp", id_rasp);
     }
 
     private String decode(String json) throws JSONException {
@@ -58,6 +62,8 @@ public class LockCar extends Activity {
 
         String json_id = jsonObject.getString("id");
         tv_id.setText("ID: " + json_id);
+        String json_id_rasp = jsonObject.getString("id_rasp");
+        tv_id_rasp.setText("Dispositivo: " + json_id_rasp);
         String json_lat = jsonObject.getString("lat");
         tv_lat.setText("Latitude: " + json_lat);
         String json_long = jsonObject.getString("long");
@@ -80,7 +86,7 @@ public class LockCar extends Activity {
             //establish server socker
 
             try {
-                URL server = new URL(MainActivity.ip_server + "get_infos.php?id_java=" + id);
+                URL server = new URL(MainActivity.ip_server + "get_infos.php?id_java=" + id_rasp);
                 BufferedReader in = new BufferedReader(new InputStreamReader(server.openStream()));
                 json = in.readLine();
             } catch (IOException e) {
@@ -91,8 +97,10 @@ public class LockCar extends Activity {
                 @Override
                 public void run() {
                     try {
-                        decode(json);
-                        verifyLocation(json);
+                        if (json != null) {
+                            decode(json);
+                            verifyLocation(json);
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -130,6 +138,7 @@ public class LockCar extends Activity {
         view.setVisibility(View.GONE);
 
         tv_id.setVisibility(View.VISIBLE);
+        tv_id_rasp.setVisibility(View.VISIBLE);
         tv_lat.setVisibility(View.VISIBLE);
         tv_long.setVisibility(View.VISIBLE);
         tv_moveu.setVisibility(View.VISIBLE);
@@ -139,7 +148,7 @@ public class LockCar extends Activity {
         callAsynchronousTask();
     }
 
-    void verifyLocation(String json) throws JSONException {
+    private void verifyLocation(String json) throws JSONException {
         JSONObject jsonObject = new JSONObject(json);
         String moveu = jsonObject.getString("moveu");
         Double time_server = jsonObject.getDouble("time");
@@ -147,9 +156,19 @@ public class LockCar extends Activity {
         if (moveu.equals("Sim") || passed_time(time_server)){
             timer.cancel();
             Intent alert = new Intent(LockCar.this, Alert.class);
-            alert.putExtra("id", id);
+            alert.putExtra("id_rasp", id_rasp);
+            alert.putExtra("display_signal", true);
+            retrieveData.cancel(true);
             startActivity(alert);
         }
+    }
+
+    public void startMap(View view) {
+        Intent map = new Intent(LockCar.this, Alert.class);
+        map.putExtra("id_rasp", id_rasp);
+        map.putExtra("display_signal", false);
+
+        startActivity(map);
     }
 
     private boolean passed_time(double time_server) {
@@ -162,7 +181,7 @@ public class LockCar extends Activity {
 
     public void configuration(View view) {
         Intent config = new Intent(LockCar.this, Configuration.class);
-        config.putExtra("id", id);
+        config.putExtra("id_rasp", id_rasp);
         startActivity(config);
     }
 

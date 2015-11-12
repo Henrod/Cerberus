@@ -16,11 +16,13 @@
         />
 
     <TextView
+        android:id="@+id/signal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="ATENÇÃO!"
+        android:text="ATENÇÃO!!\nCARRO EM MOVIMENTO!!!"
+        android:singleLine="false"
         android:textColor="#ffffff"
-        android:textSize="40sp"
+        android:textSize="20sp"
         android:gravity="center|top"
         />
 

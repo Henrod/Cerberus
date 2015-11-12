@@ -20,7 +20,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends ActionBarActivity {
 
-    public static final String ip_server = "http://192.168.1.110/cerberus/";
+    public static final String ip_server = "http://192.168.1.114/cerberus/";
 
     EditText et_login;
     EditText et_passwd;
@@ -80,10 +80,10 @@ public class MainActivity extends ActionBarActivity {
     private void decode(String json) {
         try {
             JSONObject jsonObject = new JSONObject(json);
-            int id = jsonObject.getInt("id");
+            String id_rasp = jsonObject.getString("id_rasp");
 
             Intent lock = new Intent(MainActivity.this, LockCar.class);
-            lock.putExtra("id", id);
+            lock.putExtra("id_rasp", id_rasp);
             startActivity(lock);
         } catch (JSONException e) {
             Toast.makeText(MainActivity.this, "Senha ou login incorretos", Toast.LENGTH_LONG).show();

@@ -36,6 +36,14 @@
         android:visibility="gone"/>
 
     <TextView
+        android:id="@+id/id_rasp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:visibility="gone"/>
+
+    <TextView
         android:id="@+id/lat"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -96,8 +104,24 @@
             android:background="#000044"
             android:textColor="#ffffff"
             android:layout_gravity="center"
+            android:text="Ver no mapa"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:onClick="startMap"
+            android:layout_weight="0"
+            />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#000044"
+            android:textColor="#ffffff"
+            android:layout_gravity="center"
             android:text="Configurações"
-            android:layout_margin="50dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
             android:onClick="configuration"
             android:layout_weight="0"
             />
