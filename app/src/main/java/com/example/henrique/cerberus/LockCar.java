@@ -144,6 +144,8 @@ public class LockCar extends Activity {
         tv_moveu.setVisibility(View.VISIBLE);
         tv_time.setVisibility(View.VISIBLE);
         tv_mode.setVisibility(View.VISIBLE);
+        (findViewById(R.id.open_map_button)).setVisibility(View.VISIBLE);
+        (findViewById(R.id.config_button)).setVisibility(View.VISIBLE);
 
         callAsynchronousTask();
     }

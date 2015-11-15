@@ -70,8 +70,10 @@ public class SignUp extends Activity {
                         switch (message) {
                             case "Login existente":
                                 login_exist = true;
+                                break;
                             case "Dispositivo em uso":
                                 free_rasp = false;
+                                break;
                             case "ID inexistente":
                                 exist_rasp = false;
                                 break;
