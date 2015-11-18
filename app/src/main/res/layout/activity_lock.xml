@@ -4,15 +4,8 @@
     tools:context=".LockCar"
     android:orientation="vertical"
     android:padding="16dp"
+    android:background="@drawable/wallpaper"
     >
-
-    <ImageView
-        style="@style/BackGroundImageView"
-        android:contentDescription="@string/lock_description"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        />
-
 
     <TextView
         android:id="@+id/title"
@@ -31,7 +24,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="20sp"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:layout_below="@id/title"/>
 
     <TextView
         android:id="@+id/id"
@@ -39,7 +33,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="20sp"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:layout_below="@id/textview"/>
 
     <TextView
         android:id="@+id/id_rasp"
@@ -47,7 +42,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="20sp"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:layout_below="@+id/id"/>
 
     <TextView
         android:id="@+id/lat"
@@ -55,7 +51,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="20sp"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:layout_below="@+id/id_rasp"/>
 
     <TextView
         android:id="@+id/_long"
@@ -63,7 +60,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="20sp"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:layout_below="@+id/lat"/>
 
     <TextView
         android:id="@+id/moveu"
@@ -71,7 +69,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="20sp"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:layout_below="@+id/_long"/>
 
     <TextView
         android:id="@+id/time"
@@ -79,7 +78,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="20sp"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:layout_below="@+id/moveu"/>
 
     <TextView
         android:id="@+id/mode"
@@ -87,14 +87,16 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="20sp"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:layout_below="@+id/time"/>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center|bottom"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_below="@+id/mode">
 
         <Button
             android:text="LOCK CAR"

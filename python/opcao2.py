@@ -115,8 +115,8 @@ while (True): #loop principal
         with connection.cursor() as cursor:
             # Create a new record
             
-            sql = "UPDATE `users` SET `lat` = %s , `long` = %s  , `moveu` = %s WHERE `id_rasp` = %s"
-            cursor.execute(sql, (str(novaPos[0]), str(novaPos[1]), moveuBool,str(id_do_raspi)))
+            sql = "UPDATE `users` SET `time` = %s, `lat` = %s , `long` = %s  , `moveu` = %s WHERE `id_rasp` = %s"
+            cursor.execute(sql, (str(ts), str(novaPos[0]), str(novaPos[1]), moveuBool,str(id_do_raspi)))
 
 
 

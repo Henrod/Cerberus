@@ -22,7 +22,7 @@ public class Configuration extends Activity {
 
     public int mode = 1;    //mode = 0 => total security
                              //mode = 1 => driver
-    private int id_rasp;
+    private String id_rasp;
 
     private RadioGroup radioMode;
     private RadioButton radioButton;
@@ -37,7 +37,7 @@ public class Configuration extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_configuration);
 
-        id_rasp = getIntent().getIntExtra("id_rasp", 0);
+        id_rasp = getIntent().getStringExtra("id_rasp");
 
         radioMode = (RadioGroup) findViewById(R.id.radioMode);
         ((RadioButton) findViewById(R.id.radioSeg)).toggle();

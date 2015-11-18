@@ -16,7 +16,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -174,12 +173,10 @@ public class LockCar extends Activity {
     }
 
     private boolean passed_time(double time_server) {
-        Date time = new Date();
-        double time_now = time.getTime();
-        //double time_now = 40000;
-        Log.d("time", time_now + "");
+        long time_now = System.currentTimeMillis()/1000L;
+        Log.d("horario agora", time_now+"");
 
-        return time_now >= 30000 + time_server;
+        return time_now >= 30 + time_server;
     }
 
     public void configuration(View view) {
