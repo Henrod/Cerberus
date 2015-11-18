@@ -175,8 +175,9 @@ public class LockCar extends Activity {
 
     private boolean passed_time(double time_server) {
         Date time = new Date();
-        //double time_now = time.getTime();
-        double time_now = 40000;
+        double time_now = time.getTime();
+        //double time_now = 40000;
+        Log.d("time", time_now + "");
 
         return time_now >= 30000 + time_server;
     }
