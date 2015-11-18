@@ -33,6 +33,7 @@ def randomLatLong(latitude,longitude): #lat e long iniciais
     dec_lat = random.random()/1000
     dec_lon = random.random()/1000
     return truncate(dec_lat+lat,6),truncate(dec_lon+lon,6)
+<<<<<<< HEAD
 
 
 def moveu ((lat1,lon1),(lat2,lon2),modo):
@@ -51,6 +52,20 @@ def moveu ((lat1,lon1),(lat2,lon2),modo):
             return "Sim"
 
 
+=======
+
+
+def moveu ((lat1,lon1),(lat2,lon2)):
+        epsulon = 2 #incerteza em metros
+        
+        if  ( abs(distance_on_unit_sphere(lat1,lon1,lat2,lon2) - epsulon) < abs(1.0 + epsulon)) :
+            
+            return "Nao"
+        else:
+            return "Sim"
+
+
+>>>>>>> a2fe765fdc97a2d07d8e0dfe3d98d31dc364ab4f
 '''
 randomLatLong (latitude,longitude) devolve uma tupla da forma (latitude2,longitude2) calculada a partir de uma pequena variavao a partir de latitude,longitude
 a funcao moveu recebe como parametros duas tuplas de (latitude,longitude) e calcula uma aproximacao da distancia geodesica das duas. Uma aproximacao grosseira e errada mas que deve servir pra os nossos propositos. Se vc estiver lendo isso Henrique, your the boss.
@@ -60,6 +75,7 @@ i = 0
 longitude = -46.59
 latitude = -23.62
 posInicial = randomLatLong(latitude,longitude)
+<<<<<<< HEAD
 
 posAtual = posInicial
 # Connect to the database
@@ -89,17 +105,34 @@ cur.execute(querry,str(id_do_raspi))
 
 for item in cur:
     dictModo =  item
+=======
+
+posAtual = posInicial
+# Connect to the database
+'''
+connection = pymysql.connect(host='us-cdbr-iron-east-02.cleardb.net',
+                             user='be50af336a3134',
+                             password='324da5dd',
+                             db='heroku_34cfa57a696e63d',
+                             charset='utf8mb4',
+                             cursorclass=pymysql.cursors.DictCursor)
+>>>>>>> a2fe765fdc97a2d07d8e0dfe3d98d31dc364ab4f
 
 
 
 modo = dictModo['mode'] #pega o valor de MODE da database
 
+<<<<<<< HEAD
+=======
+id_do_raspi = 789
+>>>>>>> a2fe765fdc97a2d07d8e0dfe3d98d31dc364ab4f
 
 
 while (True): #loop principal
 
     novaPos = randomLatLong(posAtual[0],posAtual[1])
 
+<<<<<<< HEAD
     moveuBool = moveu(posInicial,posAtual,modo) #bool que fala se moveu ou nao
     
     posAtual = novaPos #atualiza as coisas
@@ -111,6 +144,12 @@ while (True): #loop principal
     sleep(10) #roda a cada 5 segundos
 
 
+=======
+    moveuBool = moveu(posInicial,posAtual) #bool que fala se moveu ou nao
+    
+    posAtual = novaPos #atualiza as coisas
+
+>>>>>>> a2fe765fdc97a2d07d8e0dfe3d98d31dc364ab4f
     try:
         with connection.cursor() as cursor:
             # Create a new record
@@ -134,6 +173,12 @@ while (True): #loop principal
     finally:
         pass
 
+<<<<<<< HEAD
     
 
 #connection.close()
+=======
+    sleep(10) #roda a cada 5 segundos
+
+connection.close()
+>>>>>>> a2fe765fdc97a2d07d8e0dfe3d98d31dc364ab4f

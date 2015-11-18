@@ -4,21 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import org.json.JSONException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by henrique on 09/10/15.
@@ -27,7 +22,7 @@ public class Configuration extends Activity {
 
     public int mode = 1;    //mode = 0 => total security
                              //mode = 1 => driver
-    private int id;
+    private int id_rasp;
 
     private RadioGroup radioMode;
     private RadioButton radioButton;
@@ -42,7 +37,7 @@ public class Configuration extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_configuration);
 
-        id = getIntent().getIntExtra("id", 0);
+        id_rasp = getIntent().getIntExtra("id_rasp", 0);
 
         radioMode = (RadioGroup) findViewById(R.id.radioMode);
         ((RadioButton) findViewById(R.id.radioSeg)).toggle();
@@ -55,6 +50,9 @@ public class Configuration extends Activity {
 
         radioButton = (RadioButton) findViewById(selectedRadio);
         operationMode = radioButton.getText().toString();
+
+        if (operationMode.equals("Manobrista")) operationMode= "M";
+        else operationMode = "S";
 
         (new RetrieveData()).doInBackground();
     }
@@ -71,7 +69,7 @@ public class Configuration extends Activity {
                     super.run();
 
                     try {
-                        URL server = new URL(MainActivity.ip_server + "set_config.php?id_java=" + id +
+                        URL server = new URL(MainActivity.ip_server + "set_config.php?id_java=" + id_rasp +
                                 "&config=" + operationMode);
                         BufferedReader in = new BufferedReader(new InputStreamReader(server.openStream()));
                         json = in.readLine();
@@ -86,7 +84,7 @@ public class Configuration extends Activity {
                             while (go) {
                                 go = false;
                                 Intent lock = new Intent(Configuration.this, LockCar.class);
-                                lock.putExtra("id", id);
+                                lock.putExtra("id_rasp", id_rasp);
 
                                 Toast.makeText(Configuration.this, "Configurações salvas", Toast.LENGTH_LONG).show();
 

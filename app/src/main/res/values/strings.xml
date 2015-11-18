@@ -2,4 +2,6 @@
     <string name="app_name">Cerberus</string>
 
     <string name="action_settings">Settings</string>
+
+    <string name="lock_description">Image button to lock car</string>
 </resources>

@@ -21,7 +21,7 @@ import java.security.NoSuchAlgorithmException;
 public class SignUp extends Activity {
     EditText et_login, et_passwd, et_passwd_confirm, et_id_rasp;
     String login, passwd, passwd_confirm, id_rasp;
-    boolean msg = false, login_exist = false, rasp_exist = false;
+    boolean msg = false, login_exist = false, exist_rasp = true, free_rasp = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,15 +63,19 @@ public class SignUp extends Activity {
                     BufferedReader in;
                     try {
                         URL server = new URL(MainActivity.ip_server + "set_login.php?login_java=" + login +
-                                "&senha_java=" + passwd + "&id_rasp=" + id_rasp);
+                                "&senha_java=" + passwd + "&id_java=" + id_rasp);
                         in = new BufferedReader(new InputStreamReader(server.openStream()));
                         String message = in.readLine();
+                        Log.i("web message", message);
                         switch (message) {
-                            case "Login já existente":
+                            case "Login existente":
                                 login_exist = true;
                                 break;
-                            case "Dispositivo já em uso":
-                                rasp_exist = true;
+                            case "Dispositivo em uso":
+                                free_rasp = false;
+                                break;
+                            case "ID inexistente":
+                                exist_rasp = false;
                                 break;
                             default:
                                 msg = true;
@@ -95,14 +99,18 @@ public class SignUp extends Activity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            while (login_exist || rasp_exist) {
+                            while (login_exist || !free_rasp || !exist_rasp) {
                                 if(login_exist) {
                                     login_exist = false;
                                     Toast.makeText(SignUp.this, "Login já existente. Por favor escolha outro.", Toast.LENGTH_LONG).show();
                                     findViewById(R.id.ok_button).setClickable(true);
-                                } else if(rasp_exist) {
-                                    login_exist = false;
+                                } else if(!free_rasp) {
+                                    free_rasp    = true;
                                     Toast.makeText(SignUp.this, "Dispositivo já em uso. Adicione o correto ID.", Toast.LENGTH_LONG).show();
+                                    findViewById(R.id.ok_button).setClickable(true);
+                                } else if (!exist_rasp) {
+                                    exist_rasp = true;
+                                    Toast.makeText(SignUp.this, "Dispositivo inexistente. Adicione o correto ID.", Toast.LENGTH_LONG).show();
                                     findViewById(R.id.ok_button).setClickable(true);
                                 }
                             }

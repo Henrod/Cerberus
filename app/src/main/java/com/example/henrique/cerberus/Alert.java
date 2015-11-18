@@ -7,13 +7,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -25,41 +27,47 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
+public class Alert extends FragmentActivity implements OnMapReadyCallback {
 
-/**
- * Created by henrique on 08/09/15.
- */
-public class Alert extends FragmentActivity {
-
-    private GoogleMap googleMap;
-    private int id;
-    private static long longitude, latitude;
+    private String id_rasp;
+    private static double longitude, latitude;
+    private MapFragment mapFragment;
+    private static RetrieveData data;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.alert);
 
-        id = getIntent().getIntExtra("id", 0);
-        setUpMap();
+        id_rasp = getIntent().getStringExtra("id_rasp");
+
+        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
         startAlarm();
     }
 
-    private void setUpMap() {
-        // Do a null check to confirm that we have not already instantiated the map.
-        if (googleMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
-            googleMap = ((SupportMapFragment)  getSupportFragmentManager().findFragmentById(R.id.map))
-                    .getMap();
-        }
-    }
+    @Override
+    protected void onStart() {
+        super.onStart();
 
-    private void setMarker() {
-            LatLng coordinate = new LatLng(latitude, longitude);
-            CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 17);
-            googleMap.animateCamera(yourLocation);
-            googleMap.addMarker(new MarkerOptions().position(coordinate));
+        boolean display_signal = getIntent().getBooleanExtra("display_signal", false);
+        if (!display_signal)
+            findViewById(R.id.signal).setVisibility(View.GONE);
+
+        Timer timer = new Timer();
+        TimerTask doAsynchronousTask = new TimerTask() {
+            @Override
+            public void run() {
+                data = new RetrieveData();
+                data.execute();
+            }
+        };
+
+        timer.schedule(doAsynchronousTask, 0, 10000); //execute in every 30000 ms = 30s
     }
 
     private void startAlarm() {
@@ -80,8 +88,34 @@ public class Alert extends FragmentActivity {
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        data.cancel(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        data.cancel(true);
+    }
+
     public void stopNotification(View view) {
-        LockCar.retrieveData.cancel(true);
+        data.cancel(true);
+        Intent go_back = new Intent(Alert.this, LockCar.class);
+        go_back.putExtra("id_rasp", id_rasp);
+        startActivity(go_back);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        LatLng coordinate = new LatLng(latitude, longitude);
+
+        String loc = "(" + String.valueOf(latitude) + ", " + String.valueOf(longitude) + ")";
+        Log.d("loc", loc);
+        CameraUpdate yourLocation = CameraUpdateFactory.newLatLngZoom(coordinate, 17);
+        googleMap.animateCamera(yourLocation);
+        googleMap.addMarker(new MarkerOptions().position(coordinate).title(loc));
     }
 
     class RetrieveData extends AsyncTask<String, String, String> {
@@ -90,10 +124,9 @@ public class Alert extends FragmentActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            //establish server socker
-
+            Log.d("debug", "run");
             try {
-                URL server = new URL(MainActivity.ip_server + "get_location.php?id_java=" + id);
+                URL server = new URL(MainActivity.ip_server + "get_location.php?id_java=" + id_rasp);
                 BufferedReader in = new BufferedReader(new InputStreamReader(server.openStream()));
                 json = in.readLine();
             } catch (IOException e) {
@@ -105,23 +138,26 @@ public class Alert extends FragmentActivity {
                 public void run() {
                     if (json != null) {
                         decode(json);
-                        if (googleMap != null) {
-                            setMarker();
-                        }
                     } else
                         Toast.makeText(Alert.this, "Não foi possível obter os dados :(", Toast.LENGTH_LONG).show();
 
                 }
             });
-
             return null;
         }
 
-        private void decode(String json) {
+
+
+        private void decode(final String json) {
             try {
                 JSONObject jsonObject = new JSONObject(json);
-                latitude = jsonObject.getLong("lat");
-                longitude = jsonObject.getLong("long");
+                latitude = Double.parseDouble(jsonObject.getString("lat"));
+                longitude = Double.parseDouble(jsonObject.getString("long"));
+                Log.d("loc s", jsonObject.getDouble("lat") + " " + jsonObject.getDouble("long"));
+                if (mapFragment.getMap() != null) {
+                    mapFragment.getMap().clear();
+                    mapFragment.getMapAsync(Alert.this);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
