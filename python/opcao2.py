@@ -66,8 +66,8 @@ posAtual = posInicial
 
 connection = pymysql.connect(host='localhost',
                              user='root',
-                             password='124578Thi',
-                             db='mydb',
+                             password='12345',
+                             db='cerberus_db',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
 
