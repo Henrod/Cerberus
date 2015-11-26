@@ -64,6 +64,9 @@ posInicial = randomLatLong(latitude,longitude)
 posAtual = posInicial
 # Connect to the database
 
+id_do_raspi = sys.argv[1]
+print id_do_raspi
+
 connection = pymysql.connect(host='https://cerberus-thiagolira1.c9users.io/',
                              user='root',
                              password='12345',
@@ -71,8 +74,7 @@ connection = pymysql.connect(host='https://cerberus-thiagolira1.c9users.io/',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
 
-#mysql://be50af336a3134:324da5dd@us-cdbr-iron-east-02.cleardb.net/heroku_34cfa57a696e63d?reconnect=true
-id_do_raspi = 123
+#id_do_raspi = 123
 
 
 
