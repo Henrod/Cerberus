@@ -67,7 +67,7 @@ posAtual = posInicial
 id_do_raspi = sys.argv[1]
 print id_do_raspi
 
-connection = pymysql.connect(host='https://cerberus-thiagolira1.c9users.io/',
+connection = pymysql.connect(host='https://cerberus-thiagolira1.c9users.io',
                              user='root',
                              password='12345',
                              db='mydb',
@@ -110,7 +110,6 @@ while (True): #loop principal
 
     print datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
     
-    sleep(10) #roda a cada 5 segundos
 
 
     try:
@@ -135,6 +134,8 @@ while (True): #loop principal
 
     finally:
         pass
+
+    sleep(10) #roda a cada 5 segundos
 
     
 
