@@ -69,7 +69,7 @@ public class Configuration extends Activity {
                     super.run();
 
                     try {
-                        URL server = new URL(MainActivity.ip_server + "set_config.php?id_java=" + id_rasp +
+                        URL server = new URL(MainActivity.IP_SERVER + "set_config.php?id_java=" + id_rasp +
                                 "&config=" + operationMode);
                         BufferedReader in = new BufferedReader(new InputStreamReader(server.openStream()));
                         json = in.readLine();

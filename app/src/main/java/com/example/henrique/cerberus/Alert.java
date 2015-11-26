@@ -126,7 +126,7 @@ public class Alert extends FragmentActivity implements OnMapReadyCallback {
         protected String doInBackground(String... params) {
             Log.d("debug", "run");
             try {
-                URL server = new URL(MainActivity.ip_server + "get_location.php?id_java=" + id_rasp);
+                URL server = new URL(MainActivity.IP_SERVER + "get_location.php?id_java=" + id_rasp);
                 BufferedReader in = new BufferedReader(new InputStreamReader(server.openStream()));
                 json = in.readLine();
             } catch (IOException e) {

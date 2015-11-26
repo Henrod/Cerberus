@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -35,6 +36,8 @@ public class SignUp extends Activity {
     }
 
     public void new_register(View view) throws NoSuchAlgorithmException {
+        ((Button) view).setText("Aguarde...");
+
         id_rasp = et_id_rasp.getText().toString();
         login = et_login.getText().toString();
         passwd = et_passwd.getText().toString();
@@ -62,9 +65,10 @@ public class SignUp extends Activity {
 
                     BufferedReader in;
                     try {
-                        URL server = new URL(MainActivity.ip_server + "set_login.php?login_java=" + login +
+                        URL server = new URL(MainActivity.IP_SERVER + "set_login.php?login_java=" + login +
                                 "&senha_java=" + passwd + "&id_java=" + id_rasp);
-                        in = new BufferedReader(new InputStreamReader(server.openStream()));
+                        InputStreamReader inp = new InputStreamReader(server.openStream());
+                        in = new BufferedReader(inp);
                         String message = in.readLine();
                         Log.i("web message", message);
                         switch (message) {
@@ -103,15 +107,18 @@ public class SignUp extends Activity {
                                 if(login_exist) {
                                     login_exist = false;
                                     Toast.makeText(SignUp.this, "Login já existente. Por favor escolha outro.", Toast.LENGTH_LONG).show();
+                                    ((Button) findViewById(R.id.ok_button)).setText("Cadastrar");
                                     findViewById(R.id.ok_button).setClickable(true);
                                 } else if(!free_rasp) {
                                     free_rasp    = true;
                                     Toast.makeText(SignUp.this, "Dispositivo já em uso. Adicione o correto ID.", Toast.LENGTH_LONG).show();
                                     findViewById(R.id.ok_button).setClickable(true);
+                                    ((Button) findViewById(R.id.ok_button)).setText("Cadastrar");
                                 } else if (!exist_rasp) {
                                     exist_rasp = true;
                                     Toast.makeText(SignUp.this, "Dispositivo inexistente. Adicione o correto ID.", Toast.LENGTH_LONG).show();
                                     findViewById(R.id.ok_button).setClickable(true);
+                                    ((Button) findViewById(R.id.ok_button)).setText("Cadastrar");
                                 }
                             }
                         }

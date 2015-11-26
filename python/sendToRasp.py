@@ -64,10 +64,10 @@ posInicial = randomLatLong(latitude,longitude)
 posAtual = posInicial
 # Connect to the database
 
-connection = pymysql.connect(host='localhost',
+connection = pymysql.connect(host='https://cerberus-thiagolira1.c9users.io/',
                              user='root',
                              password='12345',
-                             db='cerberus_db',
+                             db='mydb',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
 

@@ -20,8 +20,8 @@ import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends ActionBarActivity {
 
-    //public static final String ip_server = "http://192.168.1.178/cerberus/";
-    public static final String ip_server = "https://cerberus-thiagolira1.c9users.io/";
+    //public static final String IP_SERVER = "http://192.168.1.109/cerberus/";
+    public static final String IP_SERVER = "https://cerberus-thiagolira1.c9users.io/";
 
     EditText et_login;
     EditText et_passwd;
@@ -54,7 +54,7 @@ public class MainActivity extends ActionBarActivity {
             //establish server socker
 
             try {
-                URL server = new URL(ip_server + "get_login.php?login_java=" + login +
+                URL server = new URL(IP_SERVER + "get_login.php?login_java=" + login +
                                         "&senha_java=" + passwd);
                 BufferedReader in = new BufferedReader(new InputStreamReader(server.openStream()));
                 json = in.readLine();

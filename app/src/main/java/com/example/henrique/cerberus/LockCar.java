@@ -85,7 +85,7 @@ public class LockCar extends Activity {
             //establish server socker
 
             try {
-                URL server = new URL(MainActivity.ip_server + "get_infos.php?id_java=" + id_rasp);
+                URL server = new URL(MainActivity.IP_SERVER + "get_infos.php?id_java=" + id_rasp);
                 BufferedReader in = new BufferedReader(new InputStreamReader(server.openStream()));
                 json = in.readLine();
             } catch (IOException e) {
