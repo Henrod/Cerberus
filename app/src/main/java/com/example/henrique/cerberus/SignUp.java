@@ -49,6 +49,7 @@ public class SignUp extends Activity {
             (new RetrieveData()).doInBackground();
         } else {
             Toast.makeText(SignUp.this, "Senhas não correspondentes", Toast.LENGTH_LONG).show();
+            ((Button) findViewById(R.id.ok_button)).setText("Cadastrar");
         }
     }
 

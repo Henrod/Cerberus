@@ -6,6 +6,7 @@ from math import sin, cos, sqrt, atan2, radians
 import pymysql.cursors
 import time,datetime
 
+
 def distance_on_unit_sphere(lat1, lon1, lat2, lon2):
  
     R = 6373.0 #earth radius
@@ -38,7 +39,7 @@ def randomLatLong(latitude,longitude): #lat e long iniciais
 def moveu ((lat1,lon1),(lat2,lon2),modo):
         
         if modo == "S":
-        	epsulon = 2 #incerteza em metros
+        	epsulon = 5 #incerteza em metros
         elif modo == "M":
         	epsulon = 500 #incerteza para motoristas
         else :
@@ -67,10 +68,10 @@ posAtual = posInicial
 id_do_raspi = sys.argv[1]
 print id_do_raspi
 
-connection = pymysql.connect(host='https://cerberus-thiagolira1.c9users.io',
+connection = pymysql.connect(host='localhost',
                              user='root',
                              password='12345',
-                             db='mydb',
+                             db='cerberus_db',
                              charset='utf8mb4',
                              cursorclass=pymysql.cursors.DictCursor)
 

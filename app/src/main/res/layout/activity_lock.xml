@@ -24,88 +24,186 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textSize="20sp"
+         />
+
+    <TableLayout
+        android:id="@+id/table"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:visibility="gone"
-        android:layout_below="@id/title"/>
+        android:gravity="center"
+        >
+
+        <TableRow
+            android:gravity="center">
+            <TextView
+                android:id="@+id/id1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                
+                android:text="ID do usuário"/>
+            <TextView
+                android:id="@+id/id"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                 />
+        </TableRow>
+
+        <TableRow
+            android:gravity="center">
+            <TextView
+                android:id="@+id/id_rasp1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                 
+                android:text="ID do dispositivo"/>
+            <TextView
+                android:id="@+id/id_rasp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                 />
+        </TableRow>
+
+        <TableRow
+            android:gravity="center">
+            <TextView
+                android:id="@+id/lat1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                 
+                android:text="Latitude"/>
+            <TextView
+                android:id="@+id/lat"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                 />
+        </TableRow>
+
+        <TableRow
+            android:gravity="center">
+            <TextView
+                android:id="@+id/_long1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                 
+                android:text="Longitude"/>
+            <TextView
+                android:id="@+id/_long"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                 />
+        </TableRow>
+
+        <TableRow
+            android:gravity="center">
+            <TextView
+                android:id="@+id/moveu1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                 
+                android:text="Carro moveu"/>
+            <TextView
+                android:id="@+id/moveu"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                 />
+        </TableRow>
+
+        <TableRow
+            android:gravity="center">
+            <TextView
+                android:id="@+id/time1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                 
+                android:text="Data e hora"/>
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                 />
+        </TableRow>
+
+        <TableRow
+            android:gravity="center">
+            <TextView
+                android:id="@+id/mode1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                 
+                android:text="Modo de operação"/>
+            <TextView
+                android:id="@+id/mode"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                 />
+        </TableRow>
+
+        <TableRow
+            android:gravity="center">
+            <TextView
+                android:id="@+id/address1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:text="Endereço atual"
+                />
+            <TextView
+                android:id="@+id/address"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="20sp"
+                />
+        </TableRow>
+
+    </TableLayout>
 
     <TextView
-        android:id="@+id/id"
+        android:id="@+id/warning"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textSize="20sp"
-        android:visibility="gone"
-        android:layout_below="@id/textview"/>
-
-    <TextView
-        android:id="@+id/id_rasp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:visibility="gone"
-        android:layout_below="@+id/id"/>
-
-    <TextView
-        android:id="@+id/lat"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:visibility="gone"
-        android:layout_below="@+id/id_rasp"/>
-
-    <TextView
-        android:id="@+id/_long"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:visibility="gone"
-        android:layout_below="@+id/lat"/>
-
-    <TextView
-        android:id="@+id/moveu"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:visibility="gone"
-        android:layout_below="@+id/_long"/>
-
-    <TextView
-        android:id="@+id/time"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:visibility="gone"
-        android:layout_below="@+id/moveu"/>
-
-    <TextView
-        android:id="@+id/mode"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:visibility="gone"
-        android:layout_below="@+id/time"/>
+        android:textSize="25sp"
+        android:textColor="#cc0000"
+        />
 
     <LinearLayout
+        android:id="@+id/buttons"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:gravity="center|bottom"
-        android:orientation="vertical"
-        android:layout_below="@+id/mode">
-
-        <Button
-            android:text="LOCK CAR"
-            android:textSize="50sp"
-            android:background="#dd2200"
-            android:layout_width="fill_parent"
-            android:layout_height="200dp"
-            android:onClick="start"
-            />
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/open_map_button"
@@ -137,6 +235,32 @@
             android:onClick="configuration"
             android:layout_weight="0"
             android:visibility="gone"
+            />
+
+        <Button
+            android:id="@+id/logout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="#000044"
+            android:textColor="#ffffff"
+            android:layout_gravity="center"
+            android:text="Log out"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:onClick="logout"
+            android:layout_weight="0"
+            android:visibility="gone"
+            />
+
+        <Button
+            android:id="@+id/lock_car"
+            android:text="LOCK CAR"
+            android:textSize="50sp"
+            android:background="#dd2200"
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:onClick="start"
             />
 
     </LinearLayout>

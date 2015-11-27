@@ -42,6 +42,7 @@
 
         <activity android:name=".LockCar"
                 android:label="LOCK"
+                android:noHistory="true"
             />
 
         <activity android:name=".SignUp"

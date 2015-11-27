@@ -85,6 +85,7 @@ public class Configuration extends Activity {
                                 go = false;
                                 Intent lock = new Intent(Configuration.this, LockCar.class);
                                 lock.putExtra("id_rasp", id_rasp);
+                                lock.putExtra("started", true);
 
                                 Toast.makeText(Configuration.this, "Configurações salvas", Toast.LENGTH_LONG).show();
 

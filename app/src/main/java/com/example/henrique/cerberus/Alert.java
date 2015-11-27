@@ -47,7 +47,8 @@ public class Alert extends FragmentActivity implements OnMapReadyCallback {
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        startAlarm();
+        if (getIntent().getBooleanExtra("display_signal", true))
+            startAlarm();
     }
 
     @Override
@@ -104,6 +105,7 @@ public class Alert extends FragmentActivity implements OnMapReadyCallback {
         data.cancel(true);
         Intent go_back = new Intent(Alert.this, LockCar.class);
         go_back.putExtra("id_rasp", id_rasp);
+        go_back.putExtra("started", true);
         startActivity(go_back);
     }
 
