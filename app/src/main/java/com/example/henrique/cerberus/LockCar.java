@@ -2,10 +2,12 @@ package com.example.henrique.cerberus;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,6 +18,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -31,9 +35,12 @@ public class LockCar extends Activity {
     private TextView tv_moveu;
     private TextView tv_time;
     private TextView tv_mode;
+    private TextView tv_warning;
+    private TextView tv_address;
     private String json;
 
     private String id_rasp;
+    private static boolean started = false;
 
     Timer timer;
 
@@ -44,35 +51,47 @@ public class LockCar extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lock);
 
-        tv_id = (TextView) findViewById(R.id.id);
-        tv_id_rasp = (TextView) findViewById(R.id.id_rasp);
-        tv_lat = (TextView) findViewById(R.id.lat);
-        tv_long = (TextView) findViewById(R.id._long);
-        tv_moveu = (TextView) findViewById(R.id.moveu);
-        tv_time = (TextView) findViewById(R.id.time);
-        tv_mode = (TextView) findViewById(R.id.mode);
+        tv_id       = (TextView) findViewById(R.id.id);
+        tv_id_rasp  = (TextView) findViewById(R.id.id_rasp);
+        tv_lat      = (TextView) findViewById(R.id.lat);
+        tv_long     = (TextView) findViewById(R.id._long);
+        tv_moveu    = (TextView) findViewById(R.id.moveu);
+        tv_time     = (TextView) findViewById(R.id.time);
+        tv_mode     = (TextView) findViewById(R.id.mode);
+        tv_warning  = (TextView) findViewById(R.id.warning);
+        tv_address  = (TextView) findViewById(R.id.address);
 
         id_rasp = getIntent().getStringExtra("id_rasp");
-        Log.d("id_rasp", id_rasp);
+        started = false;
+        started = getIntent().getBooleanExtra("started", false);
+
+        if (started)
+            start(findViewById(R.id.lock_car));
     }
 
     private String decode(String json) throws JSONException {
         JSONObject jsonObject = new JSONObject(json);
 
         String json_id = jsonObject.getString("id");
-        tv_id.setText("ID: " + json_id);
+        tv_id.setText(json_id);
         String json_id_rasp = jsonObject.getString("id_rasp");
-        tv_id_rasp.setText("Dispositivo: " + json_id_rasp);
+        tv_id_rasp.setText(json_id_rasp);
         String json_lat = jsonObject.getString("lat");
-        tv_lat.setText("Latitude: " + json_lat);
+        tv_lat.setText(json_lat);
         String json_long = jsonObject.getString("long");
-        tv_long.setText("Longitude: " + json_long);
+        tv_long.setText(json_long);
         String json_moveu = jsonObject.getString("moveu");
-        tv_moveu.setText("Moveu: " + json_moveu);
-        Double json_time = jsonObject.getDouble("time");
-        tv_time.setText("Tempo servidor: " + json_time);
-        String json_mode = jsonObject.getString("mode");
-        tv_mode.setText("Modo de operação: " + json_mode);
+        tv_moveu.setText(json_moveu);
+        String json_mode = jsonObject.getString("mode").equals("S") ? "Segurança total" : "Manobrista";
+        tv_mode.setText(json_mode);
+
+        Long json_time = (long) jsonObject.getDouble("time");
+        Date date = new Date(json_time*1000);
+        tv_time.setText(date.toString());
+
+        tv_address.setText(get_street_name(
+                Double.parseDouble(json_lat),
+                Double.parseDouble(json_long)));
 
         return null;
     }
@@ -136,15 +155,10 @@ public class LockCar extends Activity {
     public void start(View view){
         view.setVisibility(View.GONE);
 
-        tv_id.setVisibility(View.VISIBLE);
-        tv_id_rasp.setVisibility(View.VISIBLE);
-        tv_lat.setVisibility(View.VISIBLE);
-        tv_long.setVisibility(View.VISIBLE);
-        tv_moveu.setVisibility(View.VISIBLE);
-        tv_time.setVisibility(View.VISIBLE);
-        tv_mode.setVisibility(View.VISIBLE);
+        (findViewById(R.id.table)).setVisibility(View.VISIBLE);
         (findViewById(R.id.open_map_button)).setVisibility(View.VISIBLE);
         (findViewById(R.id.config_button)).setVisibility(View.VISIBLE);
+        (findViewById(R.id.logout)).setVisibility(View.VISIBLE);
 
         callAsynchronousTask();
     }
@@ -154,13 +168,21 @@ public class LockCar extends Activity {
         String moveu = jsonObject.getString("moveu");
         Double time_server = jsonObject.getDouble("time");
 
-        if (moveu.equals("Sim") || passed_time(time_server)){
-            timer.cancel();
-            Intent alert = new Intent(LockCar.this, Alert.class);
-            alert.putExtra("id_rasp", id_rasp);
-            alert.putExtra("display_signal", true);
-            retrieveData.cancel(true);
-            startActivity(alert);
+        if ((moveu.equals("Sim") || passed_time(time_server))){
+            if (started) {
+                tv_warning.setTextColor(Color.RED);
+                tv_warning.setText("SEU CARRO ESTÁ EM MOVIMENTO!!!");
+            } else {
+                timer.cancel();
+                retrieveData.cancel(true);
+                Intent alert = new Intent(LockCar.this, Alert.class);
+                alert.putExtra("id_rasp", id_rasp);
+                alert.putExtra("display_signal", true);
+                startActivity(alert);
+            }
+        } else {
+            tv_warning.setTextColor(Color.BLUE);
+            tv_warning.setText("Seu carro está seguro :)");
         }
     }
 
@@ -174,7 +196,6 @@ public class LockCar extends Activity {
 
     private boolean passed_time(double time_server) {
         long time_now = System.currentTimeMillis()/1000L;
-        Log.d("horario agora", time_now+"");
 
         return time_now >= 30 + time_server;
     }
@@ -183,6 +204,28 @@ public class LockCar extends Activity {
         Intent config = new Intent(LockCar.this, Configuration.class);
         config.putExtra("id_rasp", id_rasp);
         startActivity(config);
+    }
+
+    private String get_street_name(double latitude, double longitude) {
+        Geocoder geocoder = new Geocoder(LockCar.this);
+        String street = "Não descoberto";
+        try {
+            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            if (addresses != null && addresses.size() > 0) {
+                Address address = addresses.get(0);
+                street = address.getThoroughfare();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return street;
+    }
+
+    public void logout(View view) {
+        timer.cancel();
+        retrieveData.cancel(true);
+        startActivity(new Intent(LockCar.this, MainActivity.class));
     }
 
 }
