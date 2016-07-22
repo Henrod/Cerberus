@@ -234,23 +234,6 @@
             />
 
         <Button
-            android:id="@+id/logout"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="#000044"
-            android:textColor="#ffffff"
-            android:layout_gravity="center"
-            android:text="Log out"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="10dp"
-            android:onClick="logout"
-            android:layout_weight="0"
-            android:visibility="gone"
-            android:textSize="15dp"
-            />
-
-        <Button
             android:id="@+id/lock_car"
             android:text="LOCK CAR"
             android:textSize="50sp"
@@ -274,16 +257,6 @@
             android:onClick="logout"
             android:layout_weight="0"
             android:visibility="gone"
-            />
-
-        <Button
-            android:id="@+id/lock_car"
-            android:text="LOCK CAR"
-            android:textSize="50sp"
-            android:background="#dd2200"
-            android:layout_width="fill_parent"
-            android:layout_height="200dp"
-            android:onClick="start"
             />
 
     </LinearLayout>
